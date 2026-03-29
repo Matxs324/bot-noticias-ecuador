@@ -1,0 +1,38 @@
+name: Radar Noticias Ecuador
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Corre cada hora exacta
+  workflow_dispatch:      # Permite darle "Play" manual
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v3
+
+      - name: Configurar Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Instalar librerías
+        run: pip install requests beautifulsoup4
+
+      - name: Ejecutar Bot
+        run: python noticias.py
+        env:
+          TOKEN_TELEGRAM: ${{ secrets.TOKEN_TELEGRAM }}
+          MI_ID_TELEGRAM: ${{ secrets.MI_ID_TELEGRAM }}
+
+      - name: Guardar memoria (vistas.txt)
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+          git add vistas.txt
+          git commit -m "Actualizar memoria de noticias" || exit 0
+          git push
