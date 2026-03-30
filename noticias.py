@@ -84,10 +84,3 @@ if __name__ == "__main__":
     
     # 2. Guardar la memoria actualizada
     guardar_memoria(memoria_actual)
-    
-    if total_nuevas == 0:
-        # Enviar reporte de tranquilidad (opcional)
-        enviar_telegram("✅ *Reporte:* Sin novedades importantes en esta hora.")
-        print("No se encontraron noticias nuevas.")
-    else:
-        print(f"Ronda terminada: {total_nuevas} enviadas.")
