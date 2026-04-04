@@ -2,23 +2,18 @@ import requests
 from bs4 import BeautifulSoup
 import os
 
-# --- CONFIGURACIÓN ---
-# Usamos os.getenv para que GitHub Actions oculte tus llaves por seguridad
 TOKEN_TELEGRAM = os.getenv("TOKEN_TELEGRAM")
 MI_ID_TELEGRAM = os.getenv("MI_ID_TELEGRAM")
 ARCHIVO_MEMORIA = "vistas.txt"
 CABECERAS = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
 
 def cargar_memoria():
-    """Lee el archivo de texto para recordar qué noticias ya enviamos"""
     if not os.path.exists(ARCHIVO_MEMORIA):
         return []
     with open(ARCHIVO_MEMORIA, "r", encoding="utf-8") as f:
         return [linea.strip() for linea in f.readlines()]
 
 def guardar_memoria(lista_noticias):
-    """Guarda los títulos en el archivo para la próxima hora"""
-    # Solo guardamos las últimas 50 para que el archivo no pese mucho
     with open(ARCHIVO_MEMORIA, "w", encoding="utf-8") as f:
         for noticia in lista_noticias[-50:]:
             f.write(f"{noticia}\n")
@@ -42,7 +37,7 @@ def raspar_fuente(nombre_medio, url_sitio, base_url, memoria):
         articulos = sopas.find_all('a', href=True)
         
         # Filtros de importancia para Ecuador
-        palabras_vip = ["urgente", "decreto", "noboa", "asamblea", "atentado", "seguridad", "capturado", "sri", "ley", "fiscalía", "manabí"]
+        palabras_vip = ["urgente", "decreto", "noboa", "asamblea", "atentado", "seguridad", "capturado", "sri", "ley", "fiscalía", "manabí", "El Carmen", "El carmen", "el carmen", "el Carmen"]
         lista_negra = ["fútbol", "deportes", "horóscopo", "farándula", "cocina", "receta", "lotería"]
 
         for art in articulos:
@@ -65,9 +60,8 @@ def raspar_fuente(nombre_medio, url_sitio, base_url, memoria):
     return nuevas
 
 if __name__ == "__main__":
-    print("🤖 Iniciando revisión de noticias...")
+    print("Revisando noticias")
     
-    # 1. Cargar lo que ya conocemos
     memoria_actual = cargar_memoria()
     
     fuentes = [
@@ -82,5 +76,4 @@ if __name__ == "__main__":
     for nombre, url, base in fuentes:
         total_nuevas += raspar_fuente(nombre, url, base, memoria_actual)
     
-    # 2. Guardar la memoria actualizada
     guardar_memoria(memoria_actual)
