@@ -2,8 +2,8 @@ name: Radar Noticias Ecuador
 
 on:
   schedule:
-    - cron: '0 * * * *' # Corre cada hora exacta
-  workflow_dispatch:      # Permite darle "Play" manual
+    - cron: '0 * * * *'
+  workflow_dispatch:
 
 jobs:
   build:
